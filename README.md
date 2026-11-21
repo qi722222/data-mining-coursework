@@ -46,7 +46,12 @@ python scripts/account_sensitivity.py --listings "$sept" --baseline "$results" \
 
 python scripts/mixed_type_check.py --listings "$sept" --output "$results/market_checks"
 
-python scripts/render_poster.py
+followups=experiments/2026-11-21
+python scripts/followup_checks.py --listings "$sept" --baseline "$results" \
+  --geojson "$geo" --output "$followups"
+
+python scripts/render_poster.py --followups "$followups" \
+  --pdf poster/Group3_Poster_Updated.pdf --preview poster/Group3_Poster_Updated.png
 ```
 
 | Script | Outputs |
@@ -55,6 +60,11 @@ python scripts/render_poster.py
 | `market_checks.py` | Ward and GMM comparisons, feature ablations, host stability, June-to-September transfer, within-room-type prices, and district maps |
 | `account_sensitivity.py` | Account-weight sweep, cluster flows, and price comparisons on held-out host accounts |
 | `mixed_type_check.py` | K-prototypes comparisons with three categorical cost weights and two account-weighting settings |
+| `followup_checks.py` | Minimum-stay ablation at `k=3,4` with fixed scaling, paired maps for fixed C2 with 2,000 account-bootstrap draws, and a reproducible 45-night shortlist example |
 | `render_poster.py` | A vector PDF at 80 × 100 cm and a PNG preview in `poster/` |
 
-The analysis writes metrics and figures to `experiments/2026-11-19/`. The `run.json` records the input hash, feature blocks, random seed, model settings, and library versions. The input snapshots and generated files are local to each checkout.
+The two experiment folders record the input hashes and settings. `run.json` also logs the feature blocks and library versions. Input snapshots and generated artifacts are local to each checkout.
+
+## Product direction
+
+The intended audience is visiting students and interns comparing districts for a 4–12 week stay in Hong Kong. A district shortlisting tool would filter historical listings by stay length, budget, occupancy and required amenities, then show the number of matching listings, distinct host accounts and the observed price range. Listing counts and account counts answer different questions about the same pool of matches. Exact quotes and availability are checked separately at booking time.

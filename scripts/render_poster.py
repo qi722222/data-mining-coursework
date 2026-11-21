@@ -132,7 +132,7 @@ class Poster:
         self.pdf.drawPath(path, fill=1, stroke=1, fillMode=0)
 
 
-def draw_header(p, sample, checks):
+def draw_header(p, sample, checks, has_followup=False):
     p.rect(0, 0, WIDTH, HEIGHT, PAPER)
     p.rect(0, 0, WIDTH, 148, NAVY)
     p.rect(37, 25, 9, 2.8, ACCENT)
@@ -142,11 +142,16 @@ def draw_header(p, sample, checks):
     p.text(39, 109.5, "How host weighting changes Hong Kong Airbnb segments", 14.2, "demi", "#DBE8ED")
     p.text(40, 133, "Jiaqi Li   ·   Jialin Chen   /   HKUST (Guangzhou)", 7.5, "demi", "#AFC4CF")
 
-    p.text(38, 174, "Which room type gets split?", 12.5, "bold")
-    p.para(38, 191,
-           "We fit K-Means to room type, capacity, bedrooms, minimum stay and eight amenities. "
-           "We balance the feature groups and use price and location to interpret the clusters.", 355, 7.6, 10.4,
-           ink=SUBTLE)
+    if has_followup:
+        p.text(38, 174, "Where would you look for a 45-night stay?", 12.5, "bold")
+        p.para(38, 191, "For visiting students and interns, count both listings and host accounts before "
+               "shortlisting districts. We cluster listings by room type, capacity, bedrooms, minimum stay "
+               "and eight amenities.", 355, 7.6, 10.4, ink=SUBTLE)
+    else:
+        p.text(38, 174, "Which room type gets split?", 12.5, "bold")
+        p.para(38, 191, "We fit K-Means to room type, capacity, bedrooms, minimum stay and eight amenities. "
+               "We balance the feature groups and use price and location to interpret the clusters.", 355, 7.6,
+               10.4, ink=SUBTLE)
     metrics = [
         (423, f"{sample['listing_count']:,}", "Airbnb listings"),
         (537, f"{checks['host_accounts']:,}", "host accounts"),
@@ -159,7 +164,7 @@ def draw_header(p, sample, checks):
     p.text(660, 208, "10 largest accounts", 7.1, "demi", SUBTLE)
 
 
-def draw_flows(p, sample, checks, transitions, profiles, host_profiles):
+def draw_flows(p, sample, checks, transitions, profiles, host_profiles, ablation=None):
     sx, ex = (215, 582)
     right_order = [1, 3, 2]
     row_sizes = {c: sum(transitions[c].values()) for c in (1, 2, 3)}
@@ -220,7 +225,13 @@ def draw_flows(p, sample, checks, transitions, profiles, host_profiles):
         p.text(600, mid+10.2, detail, 7.1, "demi", SUBTLE)
 
     p.line(45, 480, 754, 480)
-    p.text(46, 496, "With four account-weighted clusters, the private-room stay-length split reappears.", 7.6, "bold")
+    if ablation:
+        private_counts = [int(count) for count in ablation["private_rooms_by_cluster"].split("/")]
+        flow_note = (f"Dropping minimum stay puts {max(private_counts):,}/{sum(private_counts):,} private rooms "
+                     "in one listing-weighted cluster.")
+    else:
+        flow_note = "With four account-weighted clusters, the private-room stay-length split reappears."
+    p.text(46, 496, flow_note, 7.6, "bold")
     p.text(753, 496, f"Ribbons count listings   ·   Agreement ARI {checks['host_weight_ari']:.3f}",
            7.0, "demi", SUBTLE, "right")
 
@@ -272,12 +283,7 @@ def draw_profiles_and_prices(p, profiles, private):
     p.text(45, 803, "Each dot shows the median of listings with a recorded price.", 6.45, "regular", SUBTLE)
 
 
-def draw_map(p, districts):
-    p.rect(414, 531, 357, 285, WHITE, LINE, radius=5)
-    p.text(430, 557, "Where is the 29-night group", 13.6, "bold")
-    p.text(430, 573, "more common?", 13.6, "bold")
-    p.para(430, 588, "C2 share relative to what each district's room-type mix would predict.", 324, 7.25, 9.4,
-           "demi", SUBTLE)
+def district_map_geometry():
     geography = json.loads((ROOT / "data/hong-kong-2026-09-20-neighbourhoods.geojson").read_text())["features"]
     shapes = {}
     for feature in geography:
@@ -291,20 +297,34 @@ def draw_map(p, districts):
     lat_lo = min(pt[1] for pt in points)
     lat_hi = max(pt[1] for pt in points)
     ratio = math.cos(math.radians((lat_lo+lat_hi)/2))
-    scale = min(314/((lon_hi-lon_lo)*ratio), 149/(lat_hi-lat_lo))
-    projx = 593 - (lon_hi-lon_lo)*ratio*scale/2
 
-    def project(lon, lat):
-        return projx+(lon-lon_lo)*ratio*scale, 604+(lat_hi-lat)*scale
+    def projection(center_x, top, width, height):
+        scale = min(width/((lon_hi-lon_lo)*ratio), height/(lat_hi-lat_lo))
+        left = center_x - (lon_hi-lon_lo)*ratio*scale/2
+        return lambda lon, lat: (left+(lon-lon_lo)*ratio*scale, top+(lat_hi-lat)*scale)
 
-    low, middle, high, mask = "#675294", "#F1EDE4", "#AE5227", "#CCD7DF"
+    return shapes, projection
 
-    def color(diff):
-        return blend(middle, low if diff < 0 else high, abs(diff)/35)
+
+MAP_LOW, MAP_HIGH, MAP_MASK = "#675294", "#AE5227", "#CCD7DF"
+
+
+def map_color(diff):
+    return blend("#F1EDE4", MAP_LOW if diff < 0 else MAP_HIGH, abs(diff)/35)
+
+
+def draw_map(p, districts):
+    p.rect(414, 531, 357, 285, WHITE, LINE, radius=5)
+    p.text(430, 557, "Where is the 29-night group", 13.6, "bold")
+    p.text(430, 573, "more common?", 13.6, "bold")
+    p.para(430, 588, "C2 share relative to what each district's room-type mix would predict.", 324, 7.25, 9.4,
+           "demi", SUBTLE)
+    shapes, projection = district_map_geometry()
+    project = projection(593, 604, 314, 149)
 
     for name, polygons in shapes.items():
         row = districts[name]
-        shade = color(float(row["excess_pp"])) if int(row["district_n"]) >= 50 else mask
+        shade = map_color(float(row["excess_pp"])) if int(row["district_n"]) >= 50 else MAP_MASK
         for rings in polygons:
             p.polygon(rings, project, shade)
     references = [
@@ -316,24 +336,64 @@ def draw_map(p, districts):
         cx, cy = project(*center)
         info = districts[name]
         change = float(info["excess_pp"])
-        hue = low if change < 0 else high
+        hue = MAP_LOW if change < 0 else MAP_HIGH
         p.line(cx, cy, x, y+1, INK, .55)
         p.dot(cx, cy, 1.7, hue, WHITE)
         p.rect(x-42, y-7.6, 84, 19, WHITE, radius=2)
         p.text(x, y, name, 6.1, "bold", INK, "center")
         p.text(x, y+8, f"{change:+.1f} pp · n={int(info['district_n']):,}", 6.2, "demi", hue, "center")
     for i in range(64):
-        p.rect(433+i*3.26, 766, 3.31, 6.8, color((i/63)*70-35))
+        p.rect(433+i*3.26, 766, 3.31, 6.8, map_color((i/63)*70-35))
     for x, value in ((433, "−35 pp"), (537, "0"), (641, "+35 pp")):
         p.text(x, 783, value, 6.2, "demi", SUBTLE, "center")
-    p.rect(663, 766, 8, 6.8, mask, radius=1.1)
+    p.rect(663, 766, 8, 6.8, MAP_MASK, radius=1.1)
     p.text(677, 772, "Fewer than 50 listings", 6.7, "demi", SUBTLE)
     p.para(430, 802, "Expected share combines citywide cluster rates within each room type with the district's "
            "room-type mix. pp = percentage points.",
            326, 6.35, 8.1, ink=SUBTLE)
 
 
-def draw_validation(p, report, sample, checks):
+def draw_paired_map(p, districts, min_listings):
+    p.rect(414, 531, 357, 285, WHITE, LINE, radius=5)
+    p.text(430, 555, "Does C2 still stand out?", 13.8, "bold")
+    p.para(430, 571, "Same C2 listings in both maps. Color shows the gap from the share expected "
+           "for each district's room-type mix.", 324, 7.1, 9.4, "demi", SUBTLE)
+    shapes, projection = district_map_geometry()
+    for mode, center, heading in (("listing", 508, "Listings count equally"),
+                                  ("account", 677, "Accounts count equally")):
+        p.text(center, 601, heading, 7.5, "bold", INK, "center")
+        project = projection(center, 607, 152, 99)
+        for name, polygons in shapes.items():
+            row = districts[name]
+            shade = (map_color(float(row[f"{mode}_excess_pp"]))
+                     if int(row["listing_n"]) >= min_listings else MAP_MASK)
+            for rings in polygons:
+                p.polygon(rings, project, shade)
+
+    for i in range(64):
+        p.rect(434+i*3.48, 710, 3.54, 6.2, map_color((i/63)*70-35))
+    for x, label in ((434, "−35 pp"), (545, "0"), (657, "+35 pp")):
+        p.text(x, 724, label, 6.2, "demi", SUBTLE, "center")
+    p.rect(671, 710, 7.4, 6.2, MAP_MASK, radius=1)
+    p.text(683, 716, f"Under {min_listings} listings", 6.2, "demi", SUBTLE)
+
+    p.line(430, 734, 755, 734)
+    p.text(430, 746, "District", 7.0, "bold")
+    p.text(589, 746, "Listings", 7.0, "bold", INK, "right")
+    p.text(654, 746, "Accounts", 7.0, "bold", INK, "right")
+    p.text(754, 746, "Account 95% CI", 7.0, "bold", INK, "right")
+    for y, district in ((761, "Wan Chai"), (777, "Yau Tsim Mong")):
+        row = districts[district]
+        p.text(430, y, district, 7.5, "demi")
+        p.text(589, y, f"{float(row['listing_excess_pp']):+.1f}", 7.5, "demi", INK, "right")
+        p.text(654, y, f"{float(row['account_excess_pp']):+.1f}", 7.5, "bold", INK, "right")
+        low, high = float(row["account_ci_low_pp"]), float(row["account_ci_high_pp"])
+        p.text(754, y, f"[{low:+.1f}, {high:+.1f}]", 7.2, "demi", SUBTLE, "right")
+    p.para(430, 797, "Gaps are in percentage points. Intervals resample host accounts with C2 membership fixed.",
+           325, 6.45, 8.1, ink=SUBTLE)
+
+
+def draw_validation(p, report, sample, checks, example=None):
     p.text(36, 842, "How we checked the result", 14.2, "bold")
     p.line(36, 851, 764, 851, "#CBD4D8")
     model = report["model"]
@@ -349,6 +409,18 @@ def draw_validation(p, report, sample, checks):
         (532, "Scope of the evidence", f"{sample['priced_count']:,} of {sample['listing_count']:,} listings had a price. "
          "Values are advertised nightly rates. Host IDs identify accounts, and district differences describe the snapshot."),
     ]
+    if example:
+        sections[1] = (284, "Stability and sensitivity",
+                       f"Resampling host accounts gave a median ARI of {fit_check:.3f}. "
+                       "With account weighting and minimum stay included, the two private-room "
+                       f"groups reappeared at k = 4. June-to-September ARI was {report['cross']:.3f}.")
+        wan_chai, yau_tsim_mong = (example[name] for name in ("Wan Chai", "Yau Tsim Mong"))
+        sections[2] = (532, "Try a 45-night shortlist",
+                       "One guest, private room, kitchen, up to HKD 250/night. "
+                       f"Wan Chai had {wan_chai['matching_listings']} listings from "
+                       f"{wan_chai['distinct_accounts']} accounts. Yau Tsim Mong had "
+                       f"{yau_tsim_mong['matching_listings']} from {yau_tsim_mong['distinct_accounts']}. "
+                       "Counts are from the September snapshot.")
     for x, title, body in sections:
         if x > 36:
             p.line(x-12, 862, x-12, 920, "#CFD9DB")
@@ -356,14 +428,16 @@ def draw_validation(p, report, sample, checks):
         p.para(x, 883, body, 224, 7.2, 9.4, ink=SUBTLE)
 
     p.rect(0, 942, WIDTH, 58, NAVY)
-    p.text(37, 966, "Weighting by account changes which market segments are most visible.", 10.0, "bold", WHITE)
+    conclusion = ("Use stay rules to filter, then check how many accounts are behind the listings."
+                  if example else "Weighting by account changes which market segments are most visible.")
+    p.text(37, 966, conclusion, 10.0, "bold", WHITE)
     p.text(37, 985, "Data & boundaries  ·  Inside Airbnb, Hong Kong  ·  June and September 2026  ·  CC BY 4.0", 6.8,
            "demi", "#C3D6DF")
     p.text(763, 985, "insideairbnb.com/get-the-data", 6.8, "demi", "#C3D6DF", "right")
     p.pdf.linkURL("https://insideairbnb.com/get-the-data/", (641, HEIGHT-989, 765, HEIGHT-978), relative=1)
 
 
-def render(output, preview):
+def render(output, preview, followups=None):
     sample = json.loads((RESULTS / "run.json").read_text())
     checks = json.loads((CHECKS / "checks.json").read_text())
     all_profiles = read_csv(RESULTS / "cluster_profiles_all_k.csv")
@@ -381,15 +455,28 @@ def render(output, preview):
                 if row["method"] == "Ward" and row["k"] == "3")
     report = {"model": scores, "cross": float(cross["ari_frozen_vs_september_refit"]),
               "ward": float(ward["ari_vs_reference_k3"])}
+    ablation = None
+    example = None
+    if followups:
+        followup_run = json.loads((followups / "followup_run.json").read_text())
+        if followup_run["listing_sha256"] != sample["source_sha256"]:
+            raise ValueError("Poster and follow-up tables must use the same snapshot.")
+        ablation = next(row for row in read_csv(followups / "stay_ablation_summary.csv") if row["k"] == "3"
+                        and row["fit_weighting"] == "listing" and row["features"] == "without_minimum_nights")
+        districts = {row["district"]: row for row in read_csv(followups / "fixed_c2_district_weights.csv")}
+        example = {row["district"]: row for row in read_csv(followups / "shortlist_example.csv")}
 
     install_type()
     output.parent.mkdir(parents=True, exist_ok=True)
     p = Poster(output)
-    draw_header(p, sample, checks)
-    draw_flows(p, sample, checks, transitions, profiles, host_profiles)
+    draw_header(p, sample, checks, has_followup=bool(followups))
+    draw_flows(p, sample, checks, transitions, profiles, host_profiles, ablation)
     draw_profiles_and_prices(p, profiles, private)
-    draw_map(p, districts)
-    draw_validation(p, report, sample, checks)
+    if followups:
+        draw_paired_map(p, districts, followup_run["map_min_listings"])
+    else:
+        draw_map(p, districts)
+    draw_validation(p, report, sample, checks, example=example)
     p.pdf.showPage()
     p.pdf.save()
     if preview:
@@ -403,5 +490,6 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--pdf", type=Path, default=ROOT / "poster/Group3_Poster_Draft.pdf")
     parser.add_argument("--preview", type=Path, default=ROOT / "poster/Group3_Poster_Preview.png")
+    parser.add_argument("--followups", type=Path, help="Use the stay ablation and paired C2 maps from this output folder.")
     args = parser.parse_args()
-    render(args.pdf, args.preview)
+    render(args.pdf, args.preview, args.followups)
