@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>Beyond Room Type — AIAA 3111 Group 3</title>
+    <link rel="stylesheet" href="poster.css">
+</head>
+<body>
+<article class="poster">
+    <img class="watermark" src="assets/watermark.svg" alt="">
+
+    <header class="banner">
+        <img class="arch" src="assets/architecture.svg" alt="">
+        <img class="logo" src="assets/logo_circle.png" alt="HKUST(GZ) logo">
+        <div class="wordmark">
+            <div class="wordmark-name">HKUST(GZ)</div>
+            <div class="wordmark-full">The Hong Kong University of Science and Technology (Guangzhou)</div>
+        </div>
+    </header>
+
+    <div class="silver"></div>
+
+    <div class="title-block">
+        <div class="titles">
+            <h1>Beyond Room Type</h1>
+            <p class="subtitle">How Listing- and Host-Weighted Clustering Reveal Different Structures in Hong Kong Airbnb</p>
+            <p class="authors">Jiaqi Li<sup>1</sup> and Jialin Chen<sup>1</sup></p>
+            <p class="affiliation"><sup>1</sup>The Hong Kong University of Science and Technology (Guangzhou)</p>
+        </div>
+        <div class="course">
+            <p>AIAA 3111</p>
+            <p>Data Mining</p>
+            <p class="group">Group 3</p>
+        </div>
+    </div>
+
+    <div class="columns">
+        <aside>
+            <section>
+                <h2 class="section-bar">Introduction</h2>
+                <div class="prose">
+                    <p>Airbnb listings are often treated as equally weighted observations in clustering. A single host account may manage many listings, so large accounts contribute more to the objective when every listing has the same weight.</p>
+                    <p>This study asks whether listing-level and host-account-level weighting reveal different accommodation structures in the same Hong Kong Inside Airbnb data.</p>
+                    <p>September 2026 is the primary case: <strong>6,614 listings</strong> from <strong>1,533 host accounts</strong>. Ten accounts supply 2,016 of those listings (30.5% of the snapshot). That overall share is not the concentration inside any one cluster.</p>
+                    <p><strong class="emphasis">RQ1 — Pattern discovery.</strong> What accommodation patterns emerge from clustering Hong Kong Airbnb listings?</p>
+                    <p><strong class="emphasis">RQ2 — Weighting sensitivity.</strong> How does listing-level versus host-account-level weighting change the discovered clusters?</p>
+                    <p><strong class="emphasis">RQ3 — Explanation and robustness.</strong> What explains these differences, and do they persist across temporal snapshots?</p>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-bar">Methods</h2>
+                <div class="prose">
+                    <p><strong>Data.</strong> Inside Airbnb Hong Kong snapshots from December 2025, March 2026, June 2026, and September 2026. September is the clustering case study. June has 6,734 listings. The other snapshots are used for temporal comparison.</p>
+                    <p><strong>Features.</strong> Indicators for private room, entire home/apt, shared room, and hotel room; log1p of accommodates, bedrooms, and minimum nights; and eight amenities (Kitchen, Washer, Elevator, Workspace, Refrigerator, TV, Dryer, Self check-in). Log minimum nights are clipped to the 1st–99th percentiles, and the numeric block is standardized. Each block is then divided by √(2 × the sum of its column variances). Price and district are excluded from the fit. Price is used only afterwards.</p>
+                    <p><strong>Clustering.</strong> Weighted K-Means (<span class="math">n</span><sub>init</sub> = 20, random state 3111). The predefined rule selects <span class="math">k</span> = 2: maximum silhouette among solutions whose median paired ARI is at least 0.65 and whose smallest cluster is at least 1%. <span class="math">k</span> = 3 is an exploratory resolution, not the optimum selected by that rule.</p>
+                    <p><strong>Weights.</strong> Listing-weighted, <span class="math">w<sub>i</sub></span> = 1. Host-weighted, <span class="math">w<sub>i</sub></span> = 1/<span class="math">n</span><sub>host</sub>(<span class="math">i</span>), so each account contributes the same total weight.</p>
+                    <svg class="flow" viewBox="0 0 640 300" role="img" aria-label="Dataset, feature engineering, weighted K-means, the two weighting schemes, partition comparison, then ablation and temporal evaluation.">
+                        <g fill="none" stroke="#7a1fa2" stroke-width="1.6">
+                            <rect x="24" y="2" width="592" height="38"/>
+                            <rect x="24" y="52" width="592" height="38"/>
+                            <rect x="24" y="102" width="592" height="38"/>
+                            <rect x="24" y="152" width="592" height="38"/>
+                            <rect x="24" y="202" width="592" height="38"/>
+                            <rect x="24" y="252" width="592" height="38"/>
+                            <path d="M320 40 V48 M314 44 L320 50 L326 44"/>
+                            <path d="M320 90 V98 M314 94 L320 100 L326 94"/>
+                            <path d="M320 140 V148 M314 144 L320 150 L326 144"/>
+                            <path d="M320 190 V198 M314 194 L320 200 L326 194"/>
+                            <path d="M320 240 V248 M314 244 L320 250 L326 244"/>
+                        </g>
+                        <g fill="#2a2a2a" font-family="Georgia, serif" font-size="18" text-anchor="middle">
+                            <text x="320" y="27">Dataset</text>
+                            <text x="320" y="77">Feature Engineering</text>
+                            <text x="320" y="127">Weighted K-Means</text>
+                            <text x="320" y="177">Listing Weighting / Host Weighting</text>
+                            <text x="320" y="227">Partition Comparison</text>
+                            <text x="320" y="277">Ablation and Temporal Evaluation</text>
+                        </g>
+                    </svg>
+                </div>
+            </section>
+
+            <section>
+                <h2 class="section-bar">Conclusion</h2>
+                <div class="prose">
+                    <p><strong>Main finding.</strong> Changing the weighting unit changes which accommodation structures K-Means emphasizes. Listing weights separate private rooms by minimum stay. Host weights separate entire homes by capacity.</p>
+                    <p><strong>Explanation.</strong> Minimum-stay requirements, together with the concentration of long-stay private rooms in a few accounts, help explain the difference. The same C2 listings are 33.6% of listing weight and 9.4% of host-account weight.</p>
+                    <p><strong>Robustness.</strong> This weighting-dependent pattern appears in three of four snapshots. March 2026 is the exception.</p>
+                    <p><strong>Practical implication.</strong> A search should respect minimum-stay rules and report both matching listing counts and distinct host-account counts. Those two counts answer different questions.</p>
+                    <p><strong class="emphasis">Limitations.</strong> Neither weighting is universally better. Host accounts are not necessarily independent owners. The results depend on the evaluated features, snapshots, and the exploratory resolution <span class="math">k</span> = 3.</p>
+                </div>
+            </section>
+        </aside>
+
+        <div class="gutter" aria-hidden="true"></div>
+
+        <main>
+            <h2 class="section-bar results-head">Results</h2>
+
+            <section class="block">
+                <h3>1. Weighting Changes the Clustering Structure</h3>
+                <p>On the same September features, the two <span class="math">k</span> = 3 fits are related but not the same partition (ARI = 0.464). Listing-weighted clustering separates entire homes (C1, 2,516 listings, median minimum 3 nights) from long-stay private rooms (C2, 2,219, median minimum 29 nights) and short-stay private rooms (C3, 1,879, median minimum 1 night). Host-weighted clustering instead separates smaller entire homes (1,589 listings, median capacity 2), larger entire homes (958, median capacity 6), and private rooms kept together (4,067).</p>
+                <p class="emphasis">Listing weighting subdivides private rooms by minimum-stay requirements, whereas host weighting subdivides entire homes by accommodation capacity.</p>
+                <figure class="transition-fig">
+                    <img src="assets/transition.svg" alt="Flows from the listing-weighted clusters to the host-weighted clusters. Main flows are 1,566, 950, 2,204, and 1,863 listings.">
+                    <figcaption>Figure 1. Listing counts moving between the two September partitions. Ribbon width is the count. Flows of 15, 8, and 8 listings are the thin curves. Colors mark the listing-weighted groups.</figcaption>
+                </figure>
+            </section>
+
+            <section class="block">
+                <h3>2. Minimum-Stay Rules and Host Concentration</h3>
+                <p>C2 is 2,219/6,614 listings, so it carries <strong>33.6%</strong> of listing weight, but only <strong>9.4%</strong> of host-account weight. Ten accounts supply 1,681 of the 2,219 C2 listings (76%). That account share is not the 30.5% snapshot-wide figure above. Removing minimum nights places <strong>3,992 of 4,003</strong> private-room listings in one cluster.</p>
+                <p class="table-caption">Table 1. Listing-weighted private-room profiles, September 2026.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="label">Feature</th>
+                            <th>C2 Long-stay private rooms</th>
+                            <th>C3 Short-stay private rooms</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="label">Median minimum nights</td>
+                            <td>29</td>
+                            <td>1</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Median accommodates</td>
+                            <td>1</td>
+                            <td>2</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Kitchen availability</td>
+                            <td>82%</td>
+                            <td>26%</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Median listed price</td>
+                            <td>HK$177</td>
+                            <td>HK$550</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="note">Price medians use priced private-room listings only: 1,885 of 2,197 in C2 and 1,644 of 1,806 in C3. Price was not a clustering feature. The contrast describes the fit. It is not a claim about what causes demand.</p>
+            </section>
+
+            <section class="block">
+                <h3>3. Temporal Robustness Across Four Snapshots</h3>
+                <p>The same comparison, repeated on four Inside Airbnb snapshots, does not give the September pattern every time. Listing weighting subdivides private rooms, and host weighting subdivides entire homes, in December 2025, June 2026, and September 2026.</p>
+                <p class="table-caption">Table 2. Which part of the supply each weighting subdivides.</p>
+                <table>
+                    <thead>
+                        <tr>
+                            <th class="label">Snapshot</th>
+                            <th>Listings in the snapshot</th>
+                            <th>Listing-weighted subdivision</th>
+                            <th>Host-weighted subdivision</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td class="label">Dec 2025</td>
+                            <td>6,630</td>
+                            <td>Private rooms</td>
+                            <td>Entire homes</td>
+                        </tr>
+                        <tr class="mark">
+                            <td class="label">Mar 2026</td>
+                            <td>882 private rooms</td>
+                            <td>Entire homes</td>
+                            <td>Entire homes</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Jun 2026</td>
+                            <td>6,734</td>
+                            <td>Private rooms</td>
+                            <td>Entire homes</td>
+                        </tr>
+                        <tr>
+                            <td class="label">Sep 2026</td>
+                            <td>6,614</td>
+                            <td>Private rooms</td>
+                            <td>Entire homes</td>
+                        </tr>
+                    </tbody>
+                </table>
+                <p class="note">March 2026 is the exception: both schemes subdivide entire homes. Among its 882 private-room listings, the longest minimum stay is 7 nights. That is a characteristic of the snapshot associated with the exception, not a demonstrated cause.</p>
+            </section>
+
+            <div class="split">
+                <section class="block">
+                    <h3>4. Stay-Length Eligibility and the Shortlist</h3>
+                    <p>One reading of C2 is a search filter: one guest, private room, kitchen, nightly price at most HK$250, and a requested stay of 29 nights (minimum nights at most 29 and maximum nights at least 29). In September, Wan Chai has the most matching listings (256). Yau Tsim Mong has the most distinct host accounts (15).</p>
+                    <p class="table-caption">Table 3. Eligible listings and accounts at HK$250.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th class="label">Snapshot</th>
+                                <th>Nights</th>
+                                <th>Listings</th>
+                                <th>Accounts</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="label">June 2026</td>
+                                <td>28</td>
+                                <td>76</td>
+                                <td>25</td>
+                            </tr>
+                            <tr class="mark">
+                                <td class="label">June 2026</td>
+                                <td>29</td>
+                                <td>821</td>
+                                <td>33</td>
+                            </tr>
+                            <tr>
+                                <td class="label">September 2026</td>
+                                <td>28</td>
+                                <td>79</td>
+                                <td>31</td>
+                            </tr>
+                            <tr class="mark">
+                                <td class="label">September 2026</td>
+                                <td>29</td>
+                                <td>799</td>
+                                <td>39</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="note">Matching listings rise by 745 in June and 720 in September. Distinct eligible accounts rise by only eight in each snapshot. Nine accounts supply the newly eligible listings. These are changes in who passes the filter, not new market supply. A similar listing jump, with a small account increase, appears at HK$200 and HK$300.</p>
+                </section>
+
+                <section class="block">
+                    <h3>5. Calendar-Based Availability</h3>
+                    <p>The same 2,496 private-room listings are checked for 1–30 October 2026, for one guest. The count that meets the observed calendar and minimum-stay constraints changes with median lead time.</p>
+                    <p class="table-caption">Table 4. Calendar-eligible listings by median lead time.</p>
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Median lead time</th>
+                                <th>Calendar-eligible listings</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>275 days</td>
+                                <td>1,341</td>
+                            </tr>
+                            <tr>
+                                <td>95 days</td>
+                                <td>1,402</td>
+                            </tr>
+                            <tr>
+                                <td>6 days</td>
+                                <td>1,009</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <p class="note">Calendar-based eligibility is an approximation based on observed calendar and minimum-stay constraints. Price and amenities are not restricted. The counts are not confirmed or real-time bookings.</p>
+                </section>
+            </div>
+        </main>
+    </div>
+
+    <footer class="references">
+        <div class="ref-label">Reference</div>
+        <ol class="ref-list">
+            <li>[1] Inside Airbnb. Hong Kong listings, December 2025, March 2026, June 2026, and September 2026. CC BY 4.0.</li>
+            <li>[2] Data access: <a href="https://insideairbnb.com/get-the-data">https://insideairbnb.com/get-the-data</a>. Path dates identify the downloads. License: <a href="https://creativecommons.org/licenses/by/4.0/">https://creativecommons.org/licenses/by/4.0/</a>.</li>
+        </ol>
+    </footer>
+    <div class="base-rule"></div>
+</article>
+</body>
+</html>

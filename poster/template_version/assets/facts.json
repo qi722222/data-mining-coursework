@@ -1,0 +1,189 @@
+{
+  "september_listings": 6614,
+  "june_listings": 6734,
+  "host_accounts": 1533,
+  "overall_top_ten_listings": 2016,
+  "overall_top_ten_share": 0.305,
+  "selected_k": 2,
+  "exploratory_k": 3,
+  "ari": 0.464,
+  "listing_clusters": {
+    "entire": {
+      "id": 1,
+      "n": 2516,
+      "nights": 3,
+      "guests": 3,
+      "kitchen": 80
+    },
+    "long": {
+      "id": 2,
+      "n": 2219,
+      "nights": 29,
+      "guests": 1,
+      "kitchen": 82
+    },
+    "short": {
+      "id": 3,
+      "n": 1879,
+      "nights": 1,
+      "guests": 2,
+      "kitchen": 26
+    }
+  },
+  "host_clusters": {
+    "1": {
+      "n": 1589,
+      "guests": 2,
+      "name": "Smaller entire homes"
+    },
+    "3": {
+      "n": 958,
+      "guests": 6,
+      "name": "Larger entire homes"
+    },
+    "2": {
+      "n": 4067,
+      "guests": 2,
+      "name": "Private rooms"
+    }
+  },
+  "transitions": {
+    "1": {
+      "1": 1566,
+      "2": 0,
+      "3": 950
+    },
+    "2": {
+      "1": 15,
+      "2": 2204,
+      "3": 0
+    },
+    "3": {
+      "1": 8,
+      "2": 1863,
+      "3": 8
+    }
+  },
+  "c2_listing_weight": 0.336,
+  "c2_host_weight": 0.094,
+  "c2_top_ten_listings": 1681,
+  "c2_top_ten_share": 0.76,
+  "ablation_private_dominant": 3992,
+  "ablation_private_total": 4003,
+  "prices": {
+    "c2": {
+      "median_hkd": 177,
+      "priced": 1885,
+      "private_listings": 2197
+    },
+    "c3": {
+      "median_hkd": 550,
+      "priced": 1644,
+      "private_listings": 1806
+    }
+  },
+  "eligibility": {
+    "filters": "private room, kitchen token, accommodates >= 1, price <= threshold, minimum nights <= stay <= maximum nights",
+    "rows": [
+      {
+        "snapshot": "june",
+        "nights": 28,
+        "budget_hkd": 250,
+        "listings": 76,
+        "accounts": 25
+      },
+      {
+        "snapshot": "june",
+        "nights": 29,
+        "budget_hkd": 250,
+        "listings": 821,
+        "accounts": 33
+      },
+      {
+        "snapshot": "september",
+        "nights": 28,
+        "budget_hkd": 250,
+        "listings": 79,
+        "accounts": 31
+      },
+      {
+        "snapshot": "september",
+        "nights": 29,
+        "budget_hkd": 250,
+        "listings": 799,
+        "accounts": 39
+      }
+    ],
+    "september_29_leading_listings": {
+      "district": "Wan Chai",
+      "listings": 256
+    },
+    "september_29_leading_accounts": {
+      "district": "Yau Tsim Mong",
+      "accounts": 15
+    },
+    "accounts_supplying_new_matches": 9,
+    "account_increase": 8,
+    "price_threshold_jumps": {
+      "june_200": {
+        "listing_increase": 606,
+        "account_increase": 7
+      },
+      "september_200": {
+        "listing_increase": 607,
+        "account_increase": 7
+      },
+      "june_300": {
+        "listing_increase": 816,
+        "account_increase": 8
+      },
+      "september_300": {
+        "listing_increase": 768,
+        "account_increase": 8
+      }
+    }
+  },
+  "reported_without_local_table": {
+    "source": "poster/Group3_Poster_Final.pdf",
+    "dec_2025_listings": 6630,
+    "march_2026_private_rooms": 882,
+    "march_2026_max_minimum_nights": 7,
+    "calendar_pool": 2496,
+    "calendar_window": "2026-10-01 to 2026-10-30",
+    "calendar": [
+      {
+        "median_lead_days": 275,
+        "eligible_listings": 1341
+      },
+      {
+        "median_lead_days": 95,
+        "eligible_listings": 1402
+      },
+      {
+        "median_lead_days": 6,
+        "eligible_listings": 1009
+      }
+    ]
+  },
+  "feature_notes": {
+    "numeric": "log1p of accommodates, bedrooms, and minimum nights; minimum nights clipped to the 1st\u201399th percentile of the log values; numeric block standardized",
+    "room": "indicators for Private room, Entire home/apt, Shared room, and Hotel room",
+    "amenities": [
+      "Kitchen",
+      "Washer",
+      "Elevator",
+      "Workspace",
+      "Refrigerator",
+      "TV",
+      "Dryer",
+      "Self check-in"
+    ],
+    "block_scale": "each block divided by sqrt(2 * sum of column variances)",
+    "excluded": [
+      "price",
+      "district"
+    ],
+    "kmeans": "scikit-learn KMeans, n_init=20, random_state=3111, sample_weight set to the listing or host weight",
+    "selection": "Max silhouette among median paired ARI >= .65 and minimum cluster >= 1%; all k if empty."
+  }
+}

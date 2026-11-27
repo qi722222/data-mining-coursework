@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 446" role="img" aria-label="Listing counts moving from the listing-weighted partition to the host-weighted partition">
+<text x="304" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#2a2a2a">Listing-weighted</text><text x="690" y="28" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#2a2a2a">Host-weighted</text>
+<path d="M 318.00 201.83 C 470 201.83 540 142.69 690.00 142.69" fill="none" stroke="#E7A67D" stroke-width="1.6"/>
+<path d="M 318.00 329.08 C 470 329.08 540 143.31 690.00 143.31" fill="none" stroke="#B9ABD6" stroke-width="1.6"/>
+<path d="M 318.00 329.51 C 470 329.51 540 202.88 690.00 202.88" fill="none" stroke="#B9ABD6" stroke-width="1.6"/>
+<path d="M 318.00 58.00 C 533.76 58.00 474.24 58.00 690.00 58.00 L 690.00 142.29 C 474.24 142.29 533.76 142.29 318.00 142.29 Z" fill="#87B7C0" fill-opacity="0.92"/>
+<path d="M 318.00 142.29 C 533.76 142.29 474.24 151.53 690.00 151.53 L 690.00 202.66 C 474.24 202.66 533.76 193.42 318.00 193.42 Z" fill="#87B7C0" fill-opacity="0.92"/>
+<path d="M 318.00 202.23 C 533.76 202.23 474.24 211.09 690.00 211.09 L 690.00 329.72 C 474.24 329.72 533.76 320.86 318.00 320.86 Z" fill="#E7A67D" fill-opacity="0.92"/>
+<path d="M 318.00 329.72 C 533.76 329.72 474.24 329.72 690.00 329.72 L 690.00 430.00 C 474.24 430.00 533.76 430.00 318.00 430.00 Z" fill="#B9ABD6" fill-opacity="0.92"/>
+<rect x="304" y="58.00" width="14" height="135.42" fill="#276E82"/>
+<text x="292" y="121.7" text-anchor="end" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#276E82">C1  Entire homes</text><text x="292" y="141.7" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">2,516 · median minimum 3 nights</text>
+<rect x="304" y="201.42" width="14" height="119.44" fill="#B55226"/>
+<text x="292" y="257.1" text-anchor="end" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#B55226">C2  Long-stay private rooms</text><text x="292" y="277.1" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">2,219 · median minimum 29 nights</text>
+<rect x="304" y="328.86" width="14" height="101.14" fill="#675294"/>
+<text x="292" y="375.4" text-anchor="end" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#675294">C3  Short-stay private rooms</text><text x="292" y="395.4" text-anchor="end" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">1,879 · median minimum 1 night</text>
+<rect x="690" y="58.00" width="14" height="85.53" fill="#142A3A"/>
+<text x="716" y="98.8" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#2a2a2a">Smaller entire homes</text><text x="716" y="118.8" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">1,589 · median capacity 2</text>
+<rect x="690" y="151.53" width="14" height="51.56" fill="#142A3A"/>
+<text x="716" y="175.3" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#2a2a2a">Larger entire homes</text><text x="716" y="195.3" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">958 · median capacity 6</text>
+<rect x="690" y="211.09" width="14" height="218.91" fill="#142A3A"/>
+<text x="716" y="318.5" font-family="Georgia, serif" font-size="16" font-weight="700" fill="#2a2a2a">Private rooms</text><text x="716" y="338.5" font-family="Georgia, serif" font-size="13" fill="#2a2a2a">4,067 listings together</text>
+<text x="504" y="105.1" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#276E82" stroke="#ffffff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">1,566</text>
+<text x="504" y="177.5" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#276E82" stroke="#ffffff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">950</text>
+<text x="504" y="271.0" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#B55226" stroke="#ffffff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">2,204</text>
+<text x="504" y="384.9" text-anchor="middle" font-family="Georgia, serif" font-size="18" font-weight="700" fill="#675294" stroke="#ffffff" stroke-width="5" paint-order="stroke" stroke-linejoin="round">1,863</text>
+</svg>

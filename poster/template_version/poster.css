@@ -1,0 +1,496 @@
+/* HKUST(GZ) template A — measurements from AIAA3111_Poster_Template_A_PurpleSidebar.pdf
+   Page 2268 x 2835 pt (800.1 x 1000.1 mm). CSS page is 800 x 1000 mm; 1 pt maps
+   almost 1:1. Positions below are template points times 800/2268.
+
+   Header banner: (42, 42, 2226, 202) pt. Silver rule y=206.9 h=9.9 #c9c9c9.
+   Title: Arial Bold 88 pt #2a2a2a. Authors: Georgia 34 pt #555555.
+   Affiliation: Georgia 21 pt #2a2a2a. Course: Georgia 40 pt #444444.
+   Group: Georgia Bold 60 pt #5b0f78.
+   Section bars: 72 pt high, Arial Bold ~46 pt white.
+   Left bar x=56 w=670; right bar x=793 w=1433; divider x=754 #b9a3c9.
+   Subsection: Georgia Bold 36 pt #2a2a2a. Body placeholder: 30 pt.
+   Emphasis: Georgia Bold #7a1fa2. Captions: Georgia Italic 22 pt #666666.
+   Table caption: Georgia Bold #444444. Header cells #e8ddf0.
+   Reference label: Arial Bold 44 pt white. References: Georgia 22 pt #555555.
+   Footer rule: #5b0f78, y=2766.6 h=25.5.
+   Gradient samples: #5c1079 → #8d52aa → #c4a0d4.
+
+   Body is set below the 30 pt placeholder size so the verified results fit
+   one page. Section bars, title face, and colors stay with the template.
+*/
+
+@font-face {
+    font-family: "Arial";
+    src: url("assets/fonts/Arial.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Arial";
+    src: url("assets/fonts/Arial-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Arial";
+    src: url("assets/fonts/Arial-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Georgia";
+    src: url("assets/fonts/Georgia.ttf") format("truetype");
+    font-weight: 400;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Georgia";
+    src: url("assets/fonts/Georgia-Bold.ttf") format("truetype");
+    font-weight: 700;
+    font-style: normal;
+}
+
+@font-face {
+    font-family: "Georgia";
+    src: url("assets/fonts/Georgia-Italic.ttf") format("truetype");
+    font-weight: 400;
+    font-style: italic;
+}
+
+@font-face {
+    font-family: "Georgia";
+    src: url("assets/fonts/Georgia-BoldItalic.ttf") format("truetype");
+    font-weight: 700;
+    font-style: italic;
+}
+
+:root {
+    --ink: #2a2a2a;
+    --muted: #555555;
+    --course: #444444;
+    --caption: #666666;
+    --purple: #5b0f78;
+    --emphasis: #7a1fa2;
+    --rule: #c9c9c9;
+    --divider: #b9a3c9;
+    --head-cell: #e8ddf0;
+    --row-alt: #f4eef8;
+    --paper: #ffffff;
+    --wordmark: #ebddf3;
+    --bar: linear-gradient(90deg, #5c1079 0%, #6b228a 24%, #8d52aa 58%, #c4a3d4 100%);
+    --margin-x: 14.82mm;
+    --col-left: 236.33mm;
+    --col-gap: 23.64mm;
+    --bar-h: 25.4mm;
+    --body: 20.6pt;
+    --leading: 1.38;
+}
+
+@page {
+    size: 800mm 1000mm;
+    margin: 0;
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+}
+
+html,
+body {
+    margin: 0;
+    padding: 0;
+    width: 800mm;
+    height: 1000mm;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: var(--body);
+    line-height: var(--leading);
+}
+
+.poster {
+    position: relative;
+    width: 800mm;
+    height: 1000mm;
+    background: var(--paper);
+    display: grid;
+    grid-template-rows: auto auto auto minmax(0, 1fr) auto auto;
+    overflow: visible;
+}
+
+.watermark {
+    position: absolute;
+    inset: 0;
+    width: 800mm;
+    height: 1000mm;
+    z-index: 0;
+    pointer-events: none;
+}
+
+.banner {
+    position: relative;
+    z-index: 1;
+    height: 56.44mm;
+    margin: 14.82mm var(--margin-x) 0;
+    background: var(--bar);
+    display: flex;
+    align-items: center;
+    gap: 7.5mm;
+    padding: 0 8mm 0 9.2mm;
+    overflow: hidden;
+}
+
+.banner .arch {
+    position: absolute;
+    left: -14.82mm;
+    top: -14.82mm;
+    width: 800mm;
+    height: 1000mm;
+    pointer-events: none;
+}
+
+.logo {
+    position: relative;
+    z-index: 1;
+    width: 50mm;
+    height: 50mm;
+    flex: 0 0 auto;
+}
+
+.wordmark {
+    position: relative;
+    z-index: 1;
+    color: white;
+}
+
+.wordmark-name {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 58pt;
+    line-height: 0.92;
+    letter-spacing: 0;
+    color: #ffffff;
+}
+
+.wordmark-full {
+    margin-top: 1.1mm;
+    font-family: Georgia, serif;
+    font-weight: 400;
+    font-size: 22pt;
+    line-height: 1.1;
+    color: var(--wordmark);
+}
+
+.silver {
+    position: relative;
+    z-index: 1;
+    height: 3.49mm;
+    margin: 1.73mm var(--margin-x) 0;
+    background: var(--rule);
+}
+
+.title-block {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 1fr 88mm;
+    column-gap: 6mm;
+    align-items: center;
+    padding: 7mm 16mm 6mm 18mm;
+}
+
+.titles {
+    text-align: center;
+}
+
+.titles h1 {
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 78pt;
+    line-height: 1.02;
+    color: var(--ink);
+}
+
+.subtitle {
+    margin-top: 2.4mm;
+    font-family: Georgia, serif;
+    font-size: 22pt;
+    line-height: 1.22;
+    color: var(--course);
+}
+
+.authors {
+    margin-top: 3.2mm;
+    font-family: Georgia, serif;
+    font-size: 28pt;
+    line-height: 1.15;
+    color: var(--muted);
+}
+
+.affiliation {
+    margin-top: 1.1mm;
+    font-family: Georgia, serif;
+    font-size: 16.5pt;
+    line-height: 1.2;
+    color: var(--ink);
+}
+
+.course {
+    text-align: center;
+    color: var(--course);
+}
+
+.course p {
+    font-family: Georgia, serif;
+    font-size: 32pt;
+    line-height: 1.12;
+}
+
+.course .group {
+    margin-top: 1.6mm;
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 50pt;
+    line-height: 1;
+    color: var(--purple);
+}
+
+.columns {
+    position: relative;
+    z-index: 1;
+    min-height: 0;
+    display: grid;
+    grid-template-columns: var(--col-left) var(--col-gap) minmax(0, 1fr);
+    padding: 0 15.17mm 3.2mm 19.75mm;
+}
+
+.gutter {
+    position: relative;
+}
+
+.gutter::before {
+    content: "";
+    position: absolute;
+    left: 50%;
+    top: 0;
+    bottom: 0;
+    width: 0.7pt;
+    background: var(--divider);
+    transform: translateX(-50%);
+}
+
+aside,
+main {
+    min-width: 0;
+}
+
+aside {
+    display: flex;
+    flex-direction: column;
+    gap: 5.2mm;
+}
+
+.section-bar {
+    height: var(--bar-h);
+    background: var(--bar);
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 42pt;
+    line-height: var(--bar-h);
+    text-align: center;
+    letter-spacing: 0;
+}
+
+.prose {
+    padding: 2.6mm 2.2mm 0;
+}
+
+.prose p + p {
+    margin-top: 3.1mm;
+}
+
+.prose strong {
+    font-weight: 700;
+}
+
+.emphasis {
+    color: var(--emphasis);
+    font-weight: 700;
+}
+
+.math {
+    font-style: italic;
+}
+
+sub {
+    font-size: 0.62em;
+    line-height: 0;
+}
+
+.flow {
+    display: block;
+    width: 100%;
+    height: auto;
+    margin-top: 2.4mm;
+}
+
+.results-head {
+    margin-bottom: 2.4mm;
+}
+
+main .block + .block,
+.split {
+    margin-top: 6.4mm;
+}
+
+h3 {
+    font-family: Georgia, serif;
+    font-weight: 700;
+    font-size: 26pt;
+    line-height: 1.2;
+    color: var(--ink);
+    margin-bottom: 1.5mm;
+}
+
+main p + p {
+    margin-top: 2.6mm;
+}
+
+.transition-fig {
+    margin: 1.6mm 0 0;
+}
+
+.transition-fig img {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+figcaption,
+.table-caption {
+    font-family: Georgia, serif;
+    color: var(--caption);
+}
+
+figcaption {
+    margin-top: 1.1mm;
+    font-style: italic;
+    font-size: 15pt;
+    line-height: 1.25;
+    text-align: center;
+}
+
+.table-caption {
+    font-weight: 700;
+    font-size: 15.5pt;
+    color: var(--course);
+    text-align: center;
+    margin: 1.8mm 0 1mm;
+}
+
+table {
+    width: 70%;
+    margin: 0 auto;
+    border-collapse: collapse;
+    font-family: Georgia, serif;
+    font-size: 15pt;
+    line-height: 2.25;
+    color: var(--ink);
+}
+
+th {
+    background: var(--head-cell);
+    font-weight: 700;
+    text-align: center;
+    padding: 1.15mm 1.4mm;
+}
+
+td {
+    text-align: center;
+    padding: 1mm 1.4mm;
+    background: #ffffff;
+}
+
+tbody tr:nth-child(even) td {
+    background: var(--row-alt);
+}
+
+td.label,
+th.label {
+    text-align: left;
+}
+
+tr.mark td {
+    font-weight: 700;
+}
+
+.split {
+    display: grid;
+    grid-template-columns: 1.15fr 0.85fr;
+    column-gap: 7mm;
+    margin-top: 4.2mm;
+}
+
+.note {
+    margin-top: 1.5mm;
+    font-size: 17.5pt;
+    line-height: 1.28;
+    color: var(--ink);
+}
+
+.references {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    grid-template-columns: 140.3mm 1fr;
+    column-gap: 7.8mm;
+    align-items: stretch;
+    margin: 0 var(--margin-x);
+    min-height: 48mm;
+}
+
+.ref-label {
+    background: var(--bar);
+    color: #ffffff;
+    font-family: Arial, Helvetica, sans-serif;
+    font-weight: 700;
+    font-size: 40pt;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.ref-list {
+    align-self: center;
+    list-style: none;
+    font-family: Georgia, serif;
+    font-size: 16.5pt;
+    line-height: 1.35;
+    color: var(--muted);
+}
+
+.ref-list li + li {
+    margin-top: 1mm;
+}
+
+.ref-list a {
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.base-rule {
+    position: relative;
+    z-index: 1;
+    height: 9mm;
+    margin: 4.2mm var(--margin-x) 12.6mm;
+    background: var(--purple);
+}
